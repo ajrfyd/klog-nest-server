@@ -7,11 +7,11 @@ import { TagsModel } from 'src/tags/entities/tags.entity';
 import { TagsService } from 'src/tags/tags.service';
 
 @Injectable()
-export class PostsService {
+export class PostService {
   constructor(
     @InjectRepository(PostsModel)
     private readonly postRepository: Repository<PostsModel>,
-    private readonly tagsService: TagsService,
+    private readonly tagService: TagsService,
   ) {}
 
   async getAllPosts() {
@@ -37,7 +37,9 @@ export class PostsService {
     });
     if (!post) throw new BadRequestException('존재하지 않는 포스트 입니다.');
 
-    return post;
+    post.views = post.views + 1;
+
+    return this.postRepository.save(post);
   }
 
   async createPost(post: createPostDto) {
@@ -48,7 +50,7 @@ export class PostsService {
         tags: [],
       });
     } else {
-      const tags = await this.tagsService.findOrCreateTag(post.tags);
+      const tags = await this.tagService.findOrCreateTag(post.tags);
       newPost = await this.postRepository.create({
         ...post,
         tags: tags,

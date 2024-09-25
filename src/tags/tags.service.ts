@@ -3,29 +3,33 @@ import { createTagsDto } from './dto/create-tags.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagsModel } from './entities/tags.entity';
 import { Repository } from 'typeorm';
+import { TagType } from 'src/common/types/types';
 
 @Injectable()
 export class TagsService {
   constructor(
     @InjectRepository(TagsModel)
-    private readonly tagsRepository: Repository<TagsModel>,
+    private readonly tagRepository: Repository<TagsModel>,
   ) {}
   getAllTags() {
-    return this.tagsRepository.find({
+    return this.tagRepository.find({
       relations: {
         posts: true,
+      },
+      select: {
+        posts: {
+          id: true,
+        },
       },
     });
   }
 
-  async findOrCreateTag(
-    labelArr: string[],
-  ): Promise<{ id: string; label: string }[]> {
+  async findOrCreateTag(labelArr: string[]): Promise<TagType[]> {
     if (!labelArr.length)
       throw new BadRequestException('입력된 태그가 없습니다.');
 
     // 모든 태그들
-    const savedTags = await this.tagsRepository.find();
+    const savedTags = await this.tagRepository.find();
 
     // 모든 태그 labe Set화 - {0: '라벨1', 1: '라벨2', 2: '라벨3'...}
     const tagSet = new Set(savedTags.map((tag) => tag.label));
@@ -42,11 +46,9 @@ export class TagsService {
           .find((v) => v === tag.label) === tag.label,
     );
 
-    const newTags = newOne.map((label) =>
-      this.tagsRepository.create({ label }),
-    );
+    const newTags = newOne.map((label) => this.tagRepository.create({ label }));
 
-    if (newTags.length) await this.tagsRepository.save(newTags);
+    if (newTags.length) await this.tagRepository.save(newTags);
 
     return [...existOne, ...newTags];
   }

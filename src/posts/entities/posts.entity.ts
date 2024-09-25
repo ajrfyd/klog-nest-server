@@ -5,7 +5,7 @@ import { TagsModel } from 'src/tags/entities/tags.entity';
 
 @Entity()
 export class PostsModel extends BaseModel {
-  @Column({ length: 50, type: 'varchar' })
+  @Column({ length: 100, type: 'varchar' })
   @IsString({
     message: '제목은 문자열 입니다.',
   })

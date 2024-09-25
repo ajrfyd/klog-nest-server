@@ -6,25 +6,25 @@ import {
   ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
-import { PostsService } from './posts.service';
+import { PostService } from './posts.service';
 import { createPostDto } from './dto/create-post.dto';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(private readonly postService: PostService) {}
 
   @Get()
   getPosts() {
-    return this.postsService.getAllPosts();
+    return this.postService.getAllPosts();
   }
 
   @Get(':id')
   getPost(@Param('id', ParseUUIDPipe) id: string) {
-    return this.postsService.getPostById(id);
+    return this.postService.getPostById(id);
   }
 
   @Post()
   postPost(@Body() body: createPostDto) {
-    return this.postsService.createPost(body);
+    return this.postService.createPost(body);
   }
 }

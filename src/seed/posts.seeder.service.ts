@@ -195,6 +195,20 @@ export class PostsSeederService {
         createdAt: '2024-06-17 17:30:20',
         updatedAt: '2024-06-17 17:30:20',
       },
+      {
+        id: '57fdbabe-41d5-49c4-8b7f-90734d29c71a',
+        title: 'Nest,js service 주입 관련',
+        body: '# Nest.js service 주입 관련 \n\nNest.js를 사용하며 module, service등을 주입하며 헷갈려 기록.\n\n```js\n// another.module.ts\n@Module({\n  imports: [CommonService],\n  providers: [AnotherService, CommonService]\n})\n```\n위의 방식은 잘못된 사용 방식이다.\n\nanother모듈  안에서 commonService를 주입 받아 사용하고 싶었음.\n\ncommonServ ice를 import 해 왔고, anotherModule에서 \n\n사용하기 위해 providers에 등록 하였음. (에러남)\n\n바른 방식:\n```js\n@Module({\n  providers: [CommonService],\n  exports: [CommonService]\n})\n\n// another.module.ts\n@Module({\n  imports: [CommonModule],\n  providers: [AnotherService]\n\n```\n\n\n### 포인트\n1.providers: 모듈 내부에서 사용할 서비스 정의\n\n2.exports: 다른 모듈에서 사용할 수 있도록 공개하는 서비스 정의\n\n3.다른 모듈에서 서비스를 주입받고 싶을때 모듈만 import한다.\n\n4.서비스는 모듈을 통해서 공유 되어야 함.\n\n5.imports는 모듈만 받을 수 있습니다 (서비스를 직접 임포트 할 수 없음)\n',
+        createdAt: '2024-07-01 20:30:20',
+        updatedAt: '2024-07-01 20:30:20',
+      },
+      {
+        id: '3bc98881-cc1d-43d9-a002-74276f0615bb',
+        title: 'TypeORM forRoot vs forRootAsync',
+        body: "# TypeORM forRoot vs forRootAsync\n\nNest.js에서 TypeORM을 사용하며 차이점이 궁금하여 정리\n\n### forRoot\n```js\n@Module({\n  imports: [\n    TypeOrmModule.forRoot({\n      type: 'mysql',\n      host: 'localhost',\n      port: 3306,\n      username: 'root',\n      password: 'password',\n      database: 'test',\n      entities: [],\n      synchronize: true,\n    })\n  ]\n})\n```\n\n>## 위의 예시와 같이 사용\n>\n>1.정적인 값을 바로 제공할때 사용.\n>\n>2.환경 변수나 외부 설정에 의존하지 않을때 사용.\n\n### forRootAsync\n```js\n@Module({\n  imports: [\n    TypeOrmModule.forRootAsync({\n      imports: [ConfigModule],\n      useFactory: async (configService: ConfigService) => ({\n        type: 'mysql',\n        host: configService.get('DB_HOST'),\n        port: configService.get('DB_PORT'),\n        username: configService.get('DB_USERNAME'),\n        password: configService.get('DB_PASSWORD'),\n        database: configService.get('DB_NAME'),\n        entities: [],\n        synchronize: true,\n      }),\n      inject: [ConfigService],\n    }),\n  ],\n})\n```\n> ## 위와 같이 사용\n>\n>1 비동기적으로 설정을 사용할때.\n>\n>2.환경 변수나 설정 파일에서 동적으로 값을 가져와야 할때.\n>\n>3.다른 서비스에 의존성이 있을때.\n\n\n### 정리\nforRootAsync는 데이터 베이스의 절정 값에 대해 환경에 따라\n\n동적인 값이 필요 할때 사용한다.\n\n잠깐 테스트 할때 말고는 보통 forRootAsync를 사용한다고 보면 된다.",
+        createdAt: '2024-08-03 22:20:32',
+        updatedAt: '2024-08-03 22:20:32',
+      },
     ];
 
     for (const post of posts) {

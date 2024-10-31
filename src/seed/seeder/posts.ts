@@ -181,4 +181,32 @@ export const posts = [
     createdAt: '2024-06-17 17:30:20',
     updatedAt: '2024-06-17 17:30:20',
   },
+  {
+    id: '57fdbabe-41d5-49c4-8b7f-90734d29c71a',
+    title: 'Nest.js service 주입 관련',
+    body: '# Nest.js service 주입 관련 \n\nNest.js를 사용하며 module, service등을 주입하며 헷갈려 기록.\n\n```js\n// another.module.ts\n@Module({\n  imports: [CommonService],\n  providers: [AnotherService, CommonService]\n})\n```\n위의 방식은 잘못된 사용 방식이다.\n\nanother모듈  안에서 commonService를 주입 받아 사용하고 싶었음.\n\ncommonServ ice를 import 해 왔고, anotherModule에서 \n\n사용하기 위해 providers에 등록 하였음. (에러남)\n\n바른 방식:\n```js\n@Module({\n  providers: [CommonService],\n  exports: [CommonService]\n})\n\n// another.module.ts\n@Module({\n  imports: [CommonModule],\n  providers: [AnotherService]\n\n```\n\n\n### 포인트\n1.providers: 모듈 내부에서 사용할 서비스 정의\n\n2.exports: 다른 모듈에서 사용할 수 있도록 공개하는 서비스 정의\n\n3.다른 모듈에서 서비스를 주입받고 싶을때 모듈만 import한다.\n\n4.서비스는 모듈을 통해서 공유 되어야 함.\n\n5.imports는 모듈만 받을 수 있습니다 (서비스를 직접 임포트 할 수 없음)\n',
+    createdAt: '2024-07-01 20:30:20',
+    updatedAt: '2024-07-01 20:30:20',
+  },
+  {
+    id: '3bc98881-cc1d-43d9-a002-74276f0615bb',
+    title: 'TypeORM forRoot vs forRootAsync',
+    body: "# TypeORM forRoot vs forRootAsync\n\nNest.js에서 TypeORM을 사용하며 차이점이 궁금하여 정리\n\n### forRoot\n```js\n@Module({\n  imports: [\n    TypeOrmModule.forRoot({\n      type: 'mysql',\n      host: 'localhost',\n      port: 3306,\n      username: 'root',\n      password: 'password',\n      database: 'test',\n      entities: [],\n      synchronize: true,\n    })\n  ]\n})\n```\n\n>## 위의 예시와 같이 사용\n>\n>1.정적인 값을 바로 제공할때 사용.\n>\n>2.환경 변수나 외부 설정에 의존하지 않을때 사용.\n\n### forRootAsync\n```js\n@Module({\n  imports: [\n    TypeOrmModule.forRootAsync({\n      imports: [ConfigModule],\n      useFactory: async (configService: ConfigService) => ({\n        type: 'mysql',\n        host: configService.get('DB_HOST'),\n        port: configService.get('DB_PORT'),\n        username: configService.get('DB_USERNAME'),\n        password: configService.get('DB_PASSWORD'),\n        database: configService.get('DB_NAME'),\n        entities: [],\n        synchronize: true,\n      }),\n      inject: [ConfigService],\n    }),\n  ],\n})\n```\n> ## 위와 같이 사용\n>\n>1 비동기적으로 설정을 사용할때.\n>\n>2.환경 변수나 설정 파일에서 동적으로 값을 가져와야 할때.\n>\n>3.다른 서비스에 의존성이 있을때.\n\n\n### 정리\nforRootAsync는 데이터 베이스의 절정 값에 대해 환경에 따라\n\n동적인 값이 필요 할때 사용한다.\n\n잠깐 테스트 할때 말고는 보통 forRootAsync를 사용한다고 보면 된다.",
+    createdAt: '2024-08-03 22:20:32',
+    updatedAt: '2024-08-03 22:20:32',
+  },
+  {
+    id: '5572c481-f39a-4f91-96ae-ff5bac2b7be4',
+    title: 'TypeORM @JoinColumn vs @JoinTable',
+    body: '# TypeORM @JoinColumn vs @JoinTable\n\nTypeORM을 사용하며 joinColumn, joinTable이라는\n\n두가지의 데코레이터가 존재하는데 궁금해서 간단하게 정리\n\n### @JoinColumn\n\n```js\n@Entity()\nclass User {\n    @PrimaryGeneratedColumn()\n    id: number;\n\n\n    @OneToMany(() => Post, post => post.author)\n    posts: Post[];\n}\n\n@Entity()\nclass Post {\n    @PrimaryGeneratedColumn()\n    id: number;\n\n\n    @ManyToOne(() => User, user => user.posts)\n    @JoinColumn({ name: "authorId" })\n    author: User;\n}\n```\n> 1.주로 One To One orManyToOne 관계에서 사용됨.\n>\n>2.외래키를 명시한 테이블에 추가함.\n>\n> 3.위의 경우 Post테이블에  외래키가 추가됨.\n\n\n### @JoinTable\n```js\n@Entity()\nclass Post {\n    @PrimaryGeneratedColumn()\n    id: number;\n\n    @ManyToMany(() => TagsModel, (tag) => tag.posts)\n    @JoinTable()\n    tags: TagsModel[];\n}\n```\n> 1.주로 ManyToMany관계에서 사용됨.\n>\n> 2.별도의 중간 테이블을 생성함.\n>\n> 3.위와 같은 경우 post_tags_tag등의 중간 테이블이 생성됨.\n\n\n<a href="https://stackoverflow.com/questions/30288464/when-should-i-use-joincolumn-or-jointable-with-jpa" target="_blank">[참조]</a>',
+    createdAt: '2024-08-28 20:30:33',
+    updatedAt: '2024-08-28 20:30:33',
+  },
+  {
+    id: '835c05c7-35c1-4a6b-9b03-700e9737df91',
+    title: 'Next.js 주저리',
+    body: '# Next.js 학습기\n\nReact만 사용 하다가 Next.js를  학습하며 간단하게 후기를 남김.\n\n참고로 학습 극 초반의 주저리 입니다.\n\n## 1. SSR\n\nCSR와는 다른 방식, 사용자의 요청에 서버에서 랜더링을 전달받음.\n\nSSR의 단점들도 꾸준하게 개선되어 ssg(빌드 시 미리 페이지 랜더링),\n\n isr(빌드시 미리 랜더링, 일정 주기마다 다시 랜더링) 등의 기술 들을\n\n다양하게 활용할 수 있었음. \n \n## 2. 서버 컴포넌트(RSC)\n서버 컴포넌트는 서버에서 실행되는 컴포넌트 이다.\n\n데이터 가져오는 로직을 서버로 이동하여 서버 자체에서 페이지가 구성되어\n\n돌아온다. 서버에서 실행되기 때문에 이벤트 핸들러나 React Hook 뿐\n\n아니라 localstorage, 웹 API들도 사용 할 수 없다.\n\n물론 클라이언트 컴포넌트로 변경하면 사용할 수 있긴 하나 ...\n\n리엑트로 개발하던 입장으로 서버 컴포넌트를 최대한 활용하여\n\n클라이언트 사이드에서 했던 작업들을 구현하는게 아직 쉽지가 않다. \n\n\n\n',
+    createdAt: '2024-09-18 21:10:23',
+    updatedAt: '2024-09-18 21:10:23',
+  },
 ];

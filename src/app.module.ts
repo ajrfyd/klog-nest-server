@@ -30,7 +30,7 @@ import { LogMiddleware } from './common/middleware/log.middleware';
       password: process.env.DB_PWD,
       database: process.env.DB_NAME,
       entities: [PostsModel, TagsModel],
-      synchronize: true,
+      synchronize: process.env.ENV === 'dev' ? true : false,
     }),
     PostsModule,
     TagsModule,

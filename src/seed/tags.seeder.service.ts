@@ -208,6 +208,22 @@ export class TagsSeederService {
         id: '5908170c-3f33-48bc-8b45-547745c3f3a1',
         label: 'express',
       },
+      {
+        id: '476afe77-a9b4-45f0-9244-ec57f3ddfb1e',
+        label: 'inject',
+      },
+      {
+        id: 'b14b71d2-dea1-4677-b5b8-7457fd3733e1',
+        label: 'module',
+      },
+      {
+        id: '51954533-9a3b-4a9a-9117-6de5dcc5cd72',
+        label: 'nest.js',
+      },
+      {
+        id: 'e913a4fe-cbe9-491f-a34d-0a6a54a89b28',
+        label: 'typeORM',
+      },
     ];
 
     for (const tag of tags) {

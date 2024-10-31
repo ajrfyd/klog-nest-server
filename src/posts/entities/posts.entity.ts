@@ -28,7 +28,7 @@ export class PostsModel extends BaseModel {
   @IsNumber()
   views: number;
 
-  @ManyToMany(() => TagsModel, (tag) => tag.posts)
+  @ManyToMany(() => TagsModel, (tag) => tag.posts, { onDelete: 'CASCADE' })
   @JoinTable()
   tags: TagsModel[];
 }

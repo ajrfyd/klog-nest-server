@@ -341,4 +341,40 @@ export const postNtag = [
     postId: '2fb99730-839e-474d-9e3e-07885071b6f6',
     tagId: '5908170c-3f33-48bc-8b45-547745c3f3a1',
   },
+  {
+    postId: '57fdbabe-41d5-49c4-8b7f-90734d29c71a',
+    tagId: '476afe77-a9b4-45f0-9244-ec57f3ddfb1e',
+  },
+  {
+    postId: '57fdbabe-41d5-49c4-8b7f-90734d29c71a',
+    tagId: 'b14b71d2-dea1-4677-b5b8-7457fd3733e1',
+  },
+  {
+    postId: '57fdbabe-41d5-49c4-8b7f-90734d29c71a',
+    tagId: '51954533-9a3b-4a9a-9117-6de5dcc5cd72',
+  },
+  {
+    postId: '3bc98881-cc1d-43d9-a002-74276f0615bb',
+    tagId: 'e913a4fe-cbe9-491f-a34d-0a6a54a89b28',
+  },
+  {
+    postId: '3bc98881-cc1d-43d9-a002-74276f0615bb',
+    tagId: '51954533-9a3b-4a9a-9117-6de5dcc5cd72',
+  },
+  {
+    postId: '5572c481-f39a-4f91-96ae-ff5bac2b7be4',
+    tagId: 'e913a4fe-cbe9-491f-a34d-0a6a54a89b28',
+  },
+  {
+    postId: '5572c481-f39a-4f91-96ae-ff5bac2b7be4',
+    tagId: '42cbafac-50f0-4218-bf0c-9f53648b04a4',
+  },
+  {
+    postId: '835c05c7-35c1-4a6b-9b03-700e9737df91',
+    tagId: 'c73e7611-bfbb-45f8-8e93-48517cb1454c',
+  },
+  {
+    postId: '835c05c7-35c1-4a6b-9b03-700e9737df91',
+    tagId: '3a684456-571e-4b30-807d-e610c05a64bd',
+  },
 ];

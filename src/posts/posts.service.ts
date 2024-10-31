@@ -26,7 +26,8 @@ export class PostService {
     return res;
   }
 
-  async getPostById(id: string) {
+  async getPostById(id: string, isVisited: boolean) {
+    // Todo view 숫자 올리기
     const post = await this.postRepository.findOne({
       where: {
         id,
@@ -37,9 +38,9 @@ export class PostService {
     });
     if (!post) throw new BadRequestException('존재하지 않는 포스트 입니다.');
 
-    post.views = post.views + 1;
+    if (!isVisited) post.views = post.views + 1;
 
-    return this.postRepository.save(post);
+    return isVisited ? post : this.postRepository.save(post);
   }
 
   async createPost(post: createPostDto) {
@@ -57,5 +58,21 @@ export class PostService {
       });
     }
     return this.postRepository.save(newPost);
+  }
+
+  async incrementViewCnt(id: string) {
+    const post = await this.postRepository.findOne({ where: { id } });
+    post.views = post.views++;
+    await this.postRepository.save(post);
+  }
+
+  async deletePost(id: string) {
+    const post = await this.postRepository.findOne({ where: { id } });
+    console.log(post);
+    if (!post) throw new BadRequestException('존재하지 않는 게시글 입니다.');
+
+    await this.postRepository.delete(id);
+
+    return id;
   }
 }

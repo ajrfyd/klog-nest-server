@@ -47,7 +47,9 @@ export class User extends OmitIdBaseModel {
   })
   nickname: string;
 
-  @Column()
+  @Column('varchar', {
+    length: 50,
+  })
   @Exclude({
     toPlainOnly: true,
   })
@@ -60,7 +62,7 @@ export class User extends OmitIdBaseModel {
   rooms: Room[];
 
   @IsOptional()
-  @Column({
+  @Column('varchar', {
     nullable: true,
   })
   email?: string;

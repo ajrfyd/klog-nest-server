@@ -19,7 +19,6 @@ export class BaseModel {
   updatedAt: Date;
 }
 
-@Entity()
 export class OmitIdBaseModel {
   @CreateDateColumn()
   createdAt: Date;

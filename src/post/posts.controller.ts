@@ -6,17 +6,22 @@ import {
   Headers,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Req,
   Res,
   UseInterceptors,
 } from '@nestjs/common';
 import { PostService } from './posts.service';
-import { createPostDto } from './dto/create-post.dto';
+import { CreatePostDto } from './dto/create-post.dto';
 import { CookieInterceptor } from 'src/common/interceptor/visit-cookie.interceptor';
 import { HasCookieDecorator } from 'src/common/decorator/cookie-parse.decorator';
 import { Request, Response } from 'express';
 import { DeletePostDto } from './dto/delete-post.dto';
+import { TransactionInterceptor } from 'src/common/interceptor/transaction.interceptor';
+import { QueryRunner } from 'src/common/decorator/query-runner.decorator';
+import { QueryRunner as QR } from 'typeorm';
+import { UpdatePostDto } from './dto/update-post.dto';
 
 @Controller('posts')
 @UseInterceptors(CookieInterceptor)
@@ -48,13 +53,23 @@ export class PostsController {
   }
 
   @Post()
-  postPost(@Body() body: createPostDto) {
-    return this.postService.createPost(body);
+  @UseInterceptors(TransactionInterceptor)
+  postPost(@Body() body: CreatePostDto, @QueryRunner() qr: QR) {
+    return this.postService.createPost(body, qr);
+  }
+
+  @Patch(':id')
+  @UseInterceptors(TransactionInterceptor)
+  patchPost(
+    @Param('id') id: string,
+    @Body() body: UpdatePostDto,
+    @QueryRunner() qr: QR,
+  ) {
+    return this.postService.updatePost(id, body, qr);
   }
 
   @Delete(':id')
   deletePost(@Param('id', ParseUUIDPipe) id: string) {
-    console.log(id);
     return this.postService.deletePost(id);
   }
 }

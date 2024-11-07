@@ -1,15 +1,19 @@
 import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { BaseModel } from 'src/common/entities/base.entity';
 import { IsNumber, IsString, MinLength } from 'class-validator';
-import { TagsModel } from 'src/tags/entities/tags.entity';
+import { Tag } from 'src/tag/entities/tag.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
-export class PostsModel extends BaseModel {
+export class Post extends BaseModel {
   @Column({ length: 100, type: 'varchar' })
   @IsString({
     message: '제목은 문자열 입니다.',
   })
   @MinLength(3)
+  @ApiProperty({
+    description: '블로그 제목',
+  })
   title: string;
 
   @Column({
@@ -28,7 +32,7 @@ export class PostsModel extends BaseModel {
   @IsNumber()
   views: number;
 
-  @ManyToMany(() => TagsModel, (tag) => tag.posts, { onDelete: 'CASCADE' })
+  @ManyToMany(() => Tag, (tag) => tag.posts, { onDelete: 'CASCADE' })
   @JoinTable()
-  tags: TagsModel[];
+  tags: Tag[];
 }

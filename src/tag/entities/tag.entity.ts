@@ -1,6 +1,5 @@
 import { IsString } from 'class-validator';
-import { BaseModel } from 'src/common/entities/base.entity';
-import { PostsModel } from 'src/posts/entities/posts.entity';
+import { Post } from 'src/post/entities/post.entity';
 import {
   Column,
   Entity,
@@ -9,11 +8,10 @@ import {
   ManyToMany,
   OneToMany,
   PrimaryColumn,
-  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity()
-export class TagsModel {
+export class Tag {
   @PrimaryColumn({
     type: 'uuid',
   })
@@ -26,7 +24,7 @@ export class TagsModel {
   })
   label: string;
 
-  @ManyToMany(() => PostsModel, (post) => post.tags)
+  @ManyToMany(() => Post, (post) => post.tags)
   @JoinTable()
-  posts: PostsModel[];
+  posts: Post[];
 }

@@ -1,15 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { createTagsDto } from './dto/create-tags.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TagsModel } from './entities/tags.entity';
-import { Repository } from 'typeorm';
+import { Tag } from './entities/tag.entity';
+import { In, QueryRunner, Repository } from 'typeorm';
 import { TagType } from 'src/common/types/types';
 
 @Injectable()
 export class TagsService {
   constructor(
-    @InjectRepository(TagsModel)
-    private readonly tagRepository: Repository<TagsModel>,
+    @InjectRepository(Tag)
+    private readonly tagRepository: Repository<Tag>,
   ) {}
   getAllTags() {
     return this.tagRepository.find({
@@ -51,6 +51,35 @@ export class TagsService {
     if (newTags.length) await this.tagRepository.save(newTags);
 
     return [...existOne, ...newTags];
+  }
+
+  async qrFindOrCreateTag(labelArr: string[], qr: QueryRunner) {
+    if (!labelArr.length)
+      throw new BadRequestException('입력된 태그가 없습니다.');
+
+    const existTags = await qr.manager.find(Tag, {
+      where: {
+        label: In(labelArr),
+      },
+    });
+
+    let newTags: Tag[] = [];
+
+    const toBeSavedTags = labelArr.filter(
+      (label) => !existTags.find((tag) => tag.label === label),
+    );
+
+    if (toBeSavedTags.length) {
+      const savedTags = toBeSavedTags.map((label) =>
+        qr.manager.create(Tag, { label }),
+      );
+      // const newTags = await qr.manager.save(Tag, savedTags);
+      newTags = await Promise.all(
+        savedTags.map((tag) => qr.manager.save(Tag, tag)),
+      );
+    }
+
+    return [...existTags, ...newTags];
   }
 
   createTags({ postId, tags }: createTagsDto) {

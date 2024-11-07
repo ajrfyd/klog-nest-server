@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PostsModel } from 'src/posts/entities/posts.entity';
-import { TagsModel } from 'src/tags/entities/tags.entity';
+import { Post } from 'src/post/entities/post.entity';
+import { Tag } from 'src/tag/entities/tag.entity';
 import { Repository } from 'typeorm';
 import { posts } from './seeder/posts';
 import { tags } from './seeder/tags';
@@ -11,10 +11,10 @@ import { arrToKeyObj } from 'src/common/utils/utils';
 @Injectable()
 export class PostNtagsService {
   constructor(
-    @InjectRepository(PostsModel)
-    private readonly postRepository: Repository<PostsModel>,
-    @InjectRepository(TagsModel)
-    private readonly tagRepository: Repository<TagsModel>,
+    @InjectRepository(Post)
+    private readonly postRepository: Repository<Post>,
+    @InjectRepository(Tag)
+    private readonly tagRepository: Repository<Tag>,
   ) {}
 
   async seed() {
@@ -22,8 +22,8 @@ export class PostNtagsService {
     await this.createPosts(tags);
   }
 
-  private async createTags(): Promise<TagsModel[]> {
-    let newTags: TagsModel[] = [];
+  private async createTags(): Promise<Tag[]> {
+    let newTags: Tag[] = [];
 
     for (const tag of tags) {
       let savedTag = await this.tagRepository.findOne({
@@ -40,7 +40,7 @@ export class PostNtagsService {
     return newTags;
   }
 
-  private async createPosts(tags: TagsModel[]) {
+  private async createPosts(tags: Tag[]) {
     const keyObj = arrToKeyObj(tags);
 
     for (const post of posts) {

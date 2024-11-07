@@ -7,14 +7,24 @@ import {
 } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PostsModule } from './posts/posts.module';
+import { PostsModule } from './post/posts.module';
 import { ConfigModule } from '@nestjs/config';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TagsModule } from './tags/tags.module';
-import { PostsModel } from './posts/entities/posts.entity';
-import { TagsModel } from './tags/entities/tags.entity';
+import { TagsModule } from './tag/tags.module';
+import { Post } from './post/entities/post.entity';
+import { Tag } from './tag/entities/tag.entity';
 import { LogMiddleware } from './common/middleware/log.middleware';
+import { ChatModule } from './chat/chat.module';
+import { UserModule } from './user/user.module';
+import { User } from './user/entity/user.entity';
+import { Room } from './chat/entity/room.entity';
+import { Message } from './chat/entity/message.entity';
+import { AuthModule } from './auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
+import { ForbiddenExceptionFilter } from './common/filter/forbidden.filter';
+import { QueryFailedExceptionFilter } from './common/filter/query-failed.filter';
+import { ResponseTimeInterceptor } from './common/interceptor/response-time.interceptor';
 
 @Module({
   imports: [
@@ -29,11 +39,15 @@ import { LogMiddleware } from './common/middleware/log.middleware';
       username: process.env.DB_USER,
       password: process.env.DB_PWD,
       database: process.env.DB_NAME,
-      entities: [PostsModel, TagsModel],
+      entities: [Post, Tag, User, Room, Message],
       synchronize: process.env.ENV === 'dev' ? true : false,
     }),
     PostsModule,
     TagsModule,
+    ChatModule,
+    UserModule,
+    AuthModule,
+    JwtModule,
   ],
   controllers: [AppController],
   providers: [
@@ -41,6 +55,18 @@ import { LogMiddleware } from './common/middleware/log.middleware';
     {
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseTimeInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ForbiddenExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: QueryFailedExceptionFilter,
     },
   ],
 })

@@ -1,4 +1,6 @@
+import { v4 } from 'uuid';
 import { type TagType } from '../types/types';
+import { ValueTransformer } from 'typeorm';
 
 type RT = { [key: string]: TagType };
 
@@ -14,4 +16,15 @@ export const getRemainingTime = (now: Date) => {
 
   // return (24 - t - 1) * (60 - m) * 60 * 1000;
   return ((24 - t - 1) * 60 * 60 + (60 - m) * 60) * 1000;
+};
+
+export class CustomUUIDGenerator {
+  static generate(prefix: string): string {
+    return `${prefix}-${v4()}`;
+  }
+}
+
+export const UUIDTransformer: ValueTransformer = {
+  to: (value: string) => value,
+  from: (value: string) => value,
 };

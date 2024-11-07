@@ -18,3 +18,12 @@ export class BaseModel {
   @UpdateDateColumn()
   updatedAt: Date;
 }
+
+@Entity()
+export class OmitIdBaseModel {
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+}

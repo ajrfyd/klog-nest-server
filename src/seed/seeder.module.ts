@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
-import { PostsModel } from '../posts/entities/posts.entity';
+import { Post } from '../post/entities/post.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService, ConfigModule } from '@nestjs/config';
-import { TagsModel } from 'src/tags/entities/tags.entity';
-import { TagsSeederService } from './tags.seeder.service';
+import { Tag } from 'src/tag/entities/tag.entity';
 import { PostNtagsService } from './postsNtags.seed.service';
 
 @Module({
@@ -23,7 +22,7 @@ import { PostNtagsService } from './postsNtags.seed.service';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([PostsModel, TagsModel]),
+    TypeOrmModule.forFeature([Post, Tag]),
   ],
   // providers: [PostsSeederService, TagsSeederService],
   providers: [PostNtagsService],

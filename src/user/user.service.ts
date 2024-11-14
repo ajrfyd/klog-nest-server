@@ -31,7 +31,9 @@ export class UserService {
       this.authService.basicTokenParseHandler(rawToken);
     const user = await this.authService.authenticate(nickname, password);
 
-    res.cookie('rt', await this.authService.issueTokenHandler(user, true), {
+    const refreshToken = await this.authService.issueTokenHandler(user, true);
+
+    res.cookie('rt', refreshToken, {
       maxAge: getRemainingTime(new Date(Date.now())), // MS
       httpOnly: true, // prevent XSS attacks cross-site scripting attacks
       sameSite: 'lax', // CSRF attacks cross-site request forgery attacks
@@ -46,7 +48,7 @@ export class UserService {
       nickname: user.nickname,
       role: user.role,
       accessToken: await this.authService.issueTokenHandler(user),
-      refreshToken: await this.authService.issueTokenHandler(user, true),
+      refreshToken,
     };
   }
   // async createUser(body: CreateUserDto) {
@@ -63,7 +65,7 @@ export class UserService {
   //   return await this.userRepository.save(user);
   // }
 
-  async createUser(token) {
+  async createUser(token: string, res: Response) {
     const { nickname, password } =
       this.authService.basicTokenParseHandler(token);
 
@@ -74,7 +76,27 @@ export class UserService {
     const hashed = await bcrypt.hash(password, +process.env.HASH_ROUNDS);
 
     const user = this.userRepository.create({ nickname, password: hashed });
-    return await this.userRepository.save(user);
+
+    const refreshToken = await this.authService.issueTokenHandler(user, true);
+
+    res.cookie('rt', refreshToken, {
+      maxAge: getRemainingTime(new Date(Date.now())), // MS
+      httpOnly: true, // prevent XSS attacks cross-site scripting attacks
+      sameSite: 'lax', // CSRF attacks cross-site request forgery attacks
+      secure: process.env.NODE_ENV !== 'development',
+      signed: true,
+      // path: '/',
+      //& path 시도 해 보자
+    });
+
+    await this.userRepository.save(user);
+    return {
+      id: user.id,
+      nickname: user.nickname,
+      role: user.role,
+      accessToken: await this.authService.issueTokenHandler(user),
+      refreshToken,
+    };
   }
 
   async deleteUser(nickname: string) {

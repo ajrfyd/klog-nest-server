@@ -33,8 +33,8 @@ export class UserController {
   // }
 
   @Post('register')
-  postUser(@Authorization() token: string) {
-    return this.userService.createUser(token);
+  postUser(@Authorization() token: string, @Response() res: Res) {
+    return this.userService.createUser(token, res);
   }
 
   @Delete()

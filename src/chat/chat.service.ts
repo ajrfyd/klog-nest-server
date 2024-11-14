@@ -14,4 +14,8 @@ export class ChatService {
   removeClient(id) {
     this.connectedClient.delete(id);
   }
+
+  getClients() {
+    return this.connectedClient;
+  }
 }

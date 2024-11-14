@@ -14,6 +14,12 @@ export class AuthController {
     return this.authService.login(token);
   }
 
+  @Post('user')
+  @UseGuards(TokenGuard)
+  authUser(@Authorization() token: string) {
+    return this.authService.authenticateUser(token);
+  }
+
   @Post('token/refresh')
   @UseGuards(TokenGuard, RefreshTokenGuard)
   refresh(@UserId() userId: string) {

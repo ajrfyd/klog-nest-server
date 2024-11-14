@@ -10,6 +10,8 @@ import { Repository } from 'typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
+import { Response } from 'express';
+import { getRemainingTime } from 'src/common/utils/utils';
 
 @Injectable()
 export class UserService {
@@ -24,6 +26,29 @@ export class UserService {
     return await this.userRepository.find();
   }
 
+  async login(rawToken: string, res: Response) {
+    const { nickname, password } =
+      this.authService.basicTokenParseHandler(rawToken);
+    const user = await this.authService.authenticate(nickname, password);
+
+    res.cookie('rt', await this.authService.issueTokenHandler(user, true), {
+      maxAge: getRemainingTime(new Date(Date.now())), // MS
+      httpOnly: true, // prevent XSS attacks cross-site scripting attacks
+      sameSite: 'lax', // CSRF attacks cross-site request forgery attacks
+      secure: process.env.NODE_ENV !== 'development',
+      signed: true,
+      // path: '/',
+      //& path 시도 해 보자
+    });
+
+    return {
+      id: user.id,
+      nickname: user.nickname,
+      role: user.role,
+      accessToken: await this.authService.issueTokenHandler(user),
+      refreshToken: await this.authService.issueTokenHandler(user, true),
+    };
+  }
   // async createUser(body: CreateUserDto) {
   //   const possibleToCreate = await this.isExistUser(body.nickname);
   //   if (possibleToCreate)

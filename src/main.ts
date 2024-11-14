@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,10 +22,12 @@ async function bootstrap() {
   });
 
   app.enableCors({
-    // methods: ['GET', 'POST', 'OPTIONS'],
+    methods: ['GET', 'POST', 'OPTIONS', 'PATCH', 'DELETE'],
     origin: ['http://localhost:3000'],
     credentials: true,
   });
+
+  app.useWebSocketAdapter(new IoAdapter(app));
 
   app.use(cookieParser(process.env.COOKIE_SECRET));
   // app.use(cookieParser());

@@ -48,7 +48,7 @@ export class User extends OmitIdBaseModel {
   nickname: string;
 
   @Column('varchar', {
-    length: 50,
+    length: 100,
   })
   @Exclude({
     toPlainOnly: true,

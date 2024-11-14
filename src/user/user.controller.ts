@@ -10,6 +10,8 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Authorization } from 'src/auth/decorator/authorization.decorator';
+import { Response } from './decorator/response.decorator';
+import { Response as Res } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -18,6 +20,11 @@ export class UserController {
   @Get()
   getUsers() {
     return this.userService.getUsers();
+  }
+
+  @Post('login')
+  login(@Authorization() token: string, @Response() res: Res) {
+    return this.userService.login(token, res);
   }
 
   // @Post('register')

@@ -8,6 +8,8 @@ export class ChatGateway {
 
   async handleConnection(client: Socket, ...args: any[]) {
     try {
+      if (client) this.chatService.registerClient('aaabbb', client);
+      const clients = this.chatService.getClients();
     } catch (e) {
       console.log(e.name, e.message);
       client.disconnect();

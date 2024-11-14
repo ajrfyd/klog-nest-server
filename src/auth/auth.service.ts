@@ -34,6 +34,23 @@ export class AuthService {
     }
   }
 
+  async bearerTokenParseHandler(rawToken: string) {
+    try {
+      const [prefix, token] = rawToken.split(' ');
+      if (prefix.toLowerCase() !== 'bearer')
+        throw new BadRequestException('올바른 토큰의 형식이 아닙니다.');
+      if (!token) throw new BadRequestException('토큰이 전달되지 않았습니다.');
+
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: process.env.ACCESS_TOKEN_SECRET,
+      });
+
+      return payload;
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
+  }
+
   async authenticate(nickname: string, password: string) {
     const user = await this.userRepository.findOne({ where: { nickname } });
     if (!user) throw new NotFoundException('존재하지 않는 닉네임 입니다.');
@@ -43,11 +60,21 @@ export class AuthService {
     return user;
   }
 
+  async authenticateUser(token: string) {
+    const payload = await this.bearerTokenParseHandler(token);
+    return {
+      id: payload.sub,
+      nickname: payload.nickname,
+      role: payload.role,
+    };
+  }
+
   async issueTokenHandler(user: User, isRefresh: boolean = false) {
     return await this.jwtService.signAsync(
       {
         sub: user.id,
         role: user.role,
+        nickname: user.nickname,
         type: isRefresh ? 'refresh' : 'access',
       },
       {
@@ -64,6 +91,8 @@ export class AuthService {
     const user = await this.authenticate(nickname, password);
 
     return {
+      id: user.id,
+      nickname: user.nickname,
       accessToken: await this.issueTokenHandler(user),
       refreshToken: await this.issueTokenHandler(user, true),
     };

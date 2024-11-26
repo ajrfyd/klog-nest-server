@@ -29,7 +29,8 @@ export class PostsController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  getPosts() {
+  getPosts(@Req() req: Request) {
+    console.log(req.cookies);
     return this.postService.getAllPosts();
   }
   // getPosts(@Res({ passthrough: true }) res: Response) {

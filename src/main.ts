@@ -25,7 +25,6 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'OPTIONS', 'PATCH', 'DELETE'],
     origin: ['http://localhost:3000', 'https://blog.hkound.pe.kr'],
     credentials: true,
-    allowedHeaders: ['cookie', 'cookies'],
   });
 
   app.useWebSocketAdapter(new IoAdapter(app));

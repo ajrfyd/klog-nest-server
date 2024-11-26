@@ -18,6 +18,8 @@ export class WebSocketAuthMiddleware {
     try {
       const userId = client.handshake.auth.id;
       if (!userId) return next(new Error('유저 아이디가 전달되지 않았습니다.'));
+      console.log(client.handshake.auth.id);
+      console.log(client.handshake.headers.cookie);
       const cookieStr = client.handshake.headers.cookie;
       const token = getCookieValue(cookieStr, 'rt');
 

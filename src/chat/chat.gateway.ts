@@ -27,6 +27,7 @@ import { Room } from './entity/room.entity';
     methods: ['GET', 'POST', 'OPTIONS'],
     credentials: true,
   },
+  secure: true,
 })
 export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()

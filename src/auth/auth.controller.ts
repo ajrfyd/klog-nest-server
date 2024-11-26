@@ -4,6 +4,8 @@ import { Authorization } from './decorator/authorization.decorator';
 import { TokenGuard } from './guard/token.guard';
 import { UserId } from 'src/user/decorator/user-id.decorator';
 import { RefreshTokenGuard } from './guard/refresh-token.guard';
+import { AccessTokenGuard } from './guard/access-toke.guard';
+import { RefreshToken } from './decorator/refreshToken.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -25,5 +27,11 @@ export class AuthController {
   refresh(@UserId() userId: string) {
     return this.authService.reIssueToken(userId);
     // this.authService.issueTokenHandler(user)
+  }
+
+  @Post('token/reissue')
+  @UseGuards(RefreshTokenGuard)
+  accessReissue(@RefreshToken() rawToken: string) {
+    return this.authService.reIssueAccessToken(rawToken);
   }
 }

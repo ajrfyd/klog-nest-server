@@ -75,7 +75,8 @@ export class UserService {
 
     const hashed = await bcrypt.hash(password, +process.env.HASH_ROUNDS);
 
-    const user = this.userRepository.create({ nickname, password: hashed });
+    const newUser = this.userRepository.create({ nickname, password: hashed });
+    const user = await this.userRepository.save(newUser);
 
     const refreshToken = await this.authService.issueTokenHandler(user, true);
 
@@ -89,7 +90,6 @@ export class UserService {
       //& path 시도 해 보자
     });
 
-    await this.userRepository.save(user);
     return {
       id: user.id,
       nickname: user.nickname,

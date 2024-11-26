@@ -8,6 +8,11 @@ declare global {
       queryRunner: QueryRunner;
       userId: string;
       tokenType: 'access' | 'refresh';
+      autorization: string;
+      token: {
+        type: 'Bearer' | 'Basic';
+        rawToken: string;
+      };
     }
   }
 }

@@ -51,6 +51,16 @@ export class AuthService {
     }
   }
 
+  async bearerTokenParser(rawToken: string) {
+    if (!rawToken) throw new BadRequestException('토큰이 전달되지 않았습니다.');
+
+    const payload = await this.jwtService.verifyAsync(rawToken, {
+      secret: process.env.ACCESS_TOKEN_SECRET,
+    });
+
+    return payload;
+  }
+
   async authenticate(nickname: string, password: string) {
     const user = await this.userRepository.findOne({ where: { nickname } });
     if (!user) throw new NotFoundException('존재하지 않는 닉네임 입니다.');
@@ -62,6 +72,7 @@ export class AuthService {
 
   async authenticateUser(token: string) {
     const payload = await this.bearerTokenParseHandler(token);
+
     return {
       id: payload.sub,
       nickname: payload.nickname,
@@ -105,6 +116,19 @@ export class AuthService {
     return {
       accessToken: await this.issueTokenHandler(user),
       refreshToken: await this.issueTokenHandler(user, true),
+    };
+  }
+
+  async reIssueAccessToken(rawToken: string) {
+    const payload = await this.bearerTokenParser(rawToken);
+    const user = await this.userRepository.findOne({
+      where: { id: payload.sub },
+    });
+
+    if (!user) throw new NotFoundException('존재하지 않는 유저 입니다.');
+
+    return {
+      accessToken: await this.issueTokenHandler(user),
     };
   }
 }

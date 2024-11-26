@@ -8,7 +8,7 @@ import {
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostsModule } from './post/posts.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TagsModule } from './tag/tags.module';
@@ -25,6 +25,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ForbiddenExceptionFilter } from './common/filter/forbidden.filter';
 import { QueryFailedExceptionFilter } from './common/filter/query-failed.filter';
 import { ResponseTimeInterceptor } from './common/interceptor/response-time.interceptor';
+import { JwtFailedFilter } from './common/filter/jwt-failed.filter';
 
 @Module({
   imports: [
@@ -32,15 +33,30 @@ import { ResponseTimeInterceptor } from './common/interceptor/response-time.inte
       envFilePath: '.env',
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT),
-      username: process.env.DB_USER,
-      password: process.env.DB_PWD,
-      database: process.env.DB_NAME,
-      entities: [Post, Tag, User, Room, Message],
-      synchronize: process.env.ENV === 'dev' ? true : false,
+    // TypeOrmModule.forRoot({
+    //   type: 'postgres',
+    //   host: process.env.DB_HOST,
+    //   port: parseInt(process.env.DB_PORT),
+    //   username: process.env.DB_USER,
+    //   password: process.env.DB_PWD,
+    //   database: process.env.DB_NAME,
+    //   entities: [Post, Tag, User, Room, Message],
+    //   synchronize: process.env.ENV === 'dev' ? true : false,
+    //   useUTC: true,
+    // }),
+    TypeOrmModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('DB_HOST'),
+        port: +configService.get('DB_PORT'),
+        username: configService.get('DB_USER'),
+        password: configService.get('DB_PWD'),
+        database: configService.get('DB_NAME'),
+        entities: [Post, Tag, User, Room, Message],
+        synchronize: configService.get('ENV') === 'dev' ? true : false,
+        timezone: 'KCT',
+      }),
+      inject: [ConfigService],
     }),
     PostsModule,
     TagsModule,
@@ -67,6 +83,10 @@ import { ResponseTimeInterceptor } from './common/interceptor/response-time.inte
     {
       provide: APP_FILTER,
       useClass: QueryFailedExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: JwtFailedFilter,
     },
   ],
 })

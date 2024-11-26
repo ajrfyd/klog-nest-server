@@ -7,7 +7,7 @@ export class QueryFailedExceptionFilter implements ExceptionFilter {
     const req = host.switchToHttp().getRequest();
     const res = host.switchToHttp().getResponse();
 
-    const status = 400;
+    const status = 500;
     let message = '데이터 베이스 오류 발생';
     console.warn(exception.message);
 

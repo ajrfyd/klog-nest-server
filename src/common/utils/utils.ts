@@ -28,3 +28,20 @@ export const UUIDTransformer: ValueTransformer = {
   to: (value: string) => value,
   from: (value: string) => value,
 };
+
+export const getCookieValue = (cookie: string, key: string) => {
+  if (typeof cookie !== 'string' || !cookie.length) return false;
+
+  const cookieArr = cookie.split(' ');
+
+  //! 쿠키의 패턴과 다른 문자
+  if (cookieArr.length === 1 && !cookieArr[0].includes('=')) return false;
+
+  const cookies = cookieArr.reduce((acc, cur) => {
+    const [k, v] = cur.split('=');
+    acc[k] = v[v.length - 1] === ';' ? v.slice(0, -1) : v;
+    return acc;
+  }, {});
+
+  return cookies[key];
+};

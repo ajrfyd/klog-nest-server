@@ -10,9 +10,5 @@ export const Authorization = createParamDecorator(
     const req: Request = context.switchToHttp().getRequest();
 
     return req.headers.authorization;
-    // return {
-    //   type,
-    //   token,
-    // };
   },
 );

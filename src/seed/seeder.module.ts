@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { Tag } from 'src/tag/entities/tag.entity';
 import { PostNtagsService } from './postsNtags.seed.service';
+import { User } from 'src/user/entity/user.entity';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { PostNtagsService } from './postsNtags.seed.service';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Post, Tag]),
+    TypeOrmModule.forFeature([Post, Tag, User]),
   ],
   // providers: [PostsSeederService, TagsSeederService],
   providers: [PostNtagsService],

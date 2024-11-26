@@ -7,6 +7,8 @@ import { posts } from './seeder/posts';
 import { tags } from './seeder/tags';
 import { postNtag } from './seeder/postNtag';
 import { arrToKeyObj } from 'src/common/utils/utils';
+import { user } from './seeder/user';
+import { User } from 'src/user/entity/user.entity';
 
 @Injectable()
 export class PostNtagsService {
@@ -15,11 +17,14 @@ export class PostNtagsService {
     private readonly postRepository: Repository<Post>,
     @InjectRepository(Tag)
     private readonly tagRepository: Repository<Tag>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async seed() {
     const tags = await this.createTags();
     await this.createPosts(tags);
+    await this.createUser();
   }
 
   private async createTags(): Promise<Tag[]> {
@@ -60,5 +65,9 @@ export class PostNtagsService {
         await this.postRepository.save(newPost);
       }
     }
+  }
+
+  private async createUser() {
+    await this.userRepository.save(user);
   }
 }

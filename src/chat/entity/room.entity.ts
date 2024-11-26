@@ -3,6 +3,7 @@ import { CustomUUIDGenerator, UUIDTransformer } from 'src/common/utils/utils';
 import {
   BeforeInsert,
   Entity,
+  JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryColumn,
@@ -27,5 +28,6 @@ export class Room extends OmitIdBaseModel {
   messages: Message[];
 
   @ManyToMany(() => User, (user) => user.rooms)
+  @JoinTable()
   users: User[];
 }

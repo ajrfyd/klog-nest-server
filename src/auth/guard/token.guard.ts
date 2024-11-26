@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
@@ -15,9 +16,9 @@ export class TokenGuard implements CanActivate {
     const req: Request = context.switchToHttp().getRequest();
 
     const authorization = req.headers.authorization;
+
     const [type, token] = authorization.split(' ');
     const path = req.path.split('/');
-    // console.log(this.type, ' <<<<< ');
 
     if (path.includes('refresh') && type === 'Basic')
       throw new BadRequestException('바르지 않은 토큰 포멧입니다.');
@@ -28,7 +29,10 @@ export class TokenGuard implements CanActivate {
     const expTime = exp * 1000;
     const current = Date.now();
     const valid = expTime > current;
+    // console.log(valid, ' >>>>>', tokenType, decoded);
 
+    if (tokenType === 'access' && !valid)
+      throw new UnauthorizedException('AccessToeken 만료');
     if (tokenType === 'refresh' && !valid)
       throw new BadRequestException(
         'Refresh Token의 만료기간이 지났습니다. 다시 로그인 해 주세요.',

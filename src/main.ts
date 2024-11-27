@@ -23,7 +23,11 @@ async function bootstrap() {
 
   app.enableCors({
     methods: ['GET', 'POST', 'OPTIONS', 'PATCH', 'DELETE'],
-    origin: ['http://localhost:3000', 'https://blog.hkound.pe.kr'],
+    origin: [
+      'http://localhost:3000',
+      'https://blog.hkound.pe.kr',
+      'https://hkound-next.vercel.app',
+    ],
     credentials: true,
   });
 

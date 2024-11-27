@@ -21,10 +21,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { WsRoom } from './decorator/ws-room.decorator';
 import { Room } from './entity/room.entity';
 
-@WebSocketGateway({
-  cookie: true,
-  cors: { origin: 'https://blog.hkound.pe.kr', credentials: true },
-})
+@WebSocketGateway()
 export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server;

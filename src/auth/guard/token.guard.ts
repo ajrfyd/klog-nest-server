@@ -26,6 +26,8 @@ export class TokenGuard implements CanActivate {
     const decoded = this.jwtService.decode(token);
     console.log(decoded);
 
+    if (!decoded) throw new BadRequestException('Token이 변조된것 같습니다.');
+
     const { sub, exp, type: tokenType } = decoded;
     const expTime = exp * 1000;
     const current = Date.now();

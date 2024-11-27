@@ -24,6 +24,7 @@ export class TokenGuard implements CanActivate {
       throw new BadRequestException('바르지 않은 토큰 포멧입니다.');
 
     const decoded = this.jwtService.decode(token);
+    console.log(decoded);
 
     if (!decoded) throw new BadRequestException('Token이 변조된것 같습니다.');
 

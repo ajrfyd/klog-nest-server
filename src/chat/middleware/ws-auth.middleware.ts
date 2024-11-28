@@ -23,7 +23,7 @@ export class WebSocketAuthMiddleware {
       console.log(client.handshake);
       // const cookieStr = client.handshake.headers.cookie;
       // const token = getCookieValue(cookieStr, 'rt');
-      const token = client.handshake.headers.token as string;
+      const token = client.handshake.auth.token as string;
 
       if (!token)
         return next(new Error('토큰 형식이 잘못되었거나 전달되지 않았습니다.'));

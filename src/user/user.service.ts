@@ -36,7 +36,8 @@ export class UserService {
     res.cookie('rt', refreshToken, {
       maxAge: getRemainingTime(new Date(Date.now())), // MS
       httpOnly: true, // prevent XSS attacks cross-site scripting attacks
-      sameSite: 'lax', // CSRF attacks cross-site request forgery attacks
+      // sameSite: 'lax', // CSRF attacks cross-site request forgery attacks
+      sameSite: 'none', // CSRF attacks cross-site request forgery attacks
       secure: process.env.NODE_ENV !== 'development',
       signed: true,
       // path: '/',

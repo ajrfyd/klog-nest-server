@@ -29,7 +29,9 @@ export class PostsController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  getPosts() {
+  getPosts(@Req() req: Request) {
+    console.log(req.cookies);
+    console.log(req.signedCookies);
     return this.postService.getAllPosts();
   }
   // getPosts(@Res({ passthrough: true }) res: Response) {
@@ -50,8 +52,6 @@ export class PostsController {
     @HasCookieDecorator() isVisited: boolean,
     @Req() req: Request,
   ) {
-    console.log(req.cookies, '<><><');
-    console.log(req.signedCookies, '<><><><');
     return this.postService.getPostById(id, isVisited);
   }
 

@@ -27,6 +27,7 @@ async function bootstrap() {
       'http://localhost:3000',
       'https://blog.hkound.pe.kr',
       'https://hkound-next.vercel.app',
+      'https://next.hkound.xyz',
     ],
     credentials: true,
   });

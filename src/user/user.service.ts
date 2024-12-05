@@ -34,7 +34,7 @@ export class UserService {
     const refreshToken = await this.authService.issueTokenHandler(user, true);
 
     res.cookie('rt', refreshToken, {
-      maxAge: getRemainingTime(new Date(Date.now())), // MS
+      maxAge: 30 * 24 * 60 * 60, // MS
       httpOnly: true, // prevent XSS attacks cross-site scripting attacks
       // sameSite: 'lax', // CSRF attacks cross-site request forgery attacks
       sameSite: 'none', // CSRF attacks cross-site request forgery attacks
